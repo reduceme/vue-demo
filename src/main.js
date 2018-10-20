@@ -7,7 +7,6 @@ import Vue from 'vue'
 import Axios from 'axios'
 import App from './App'
 import router from './router'
-import store from './store'
 
 // 引用element-ui框架
 import Element from 'element-ui'
@@ -25,7 +24,6 @@ Vue.use(Element)
 new Vue({
   el: '#app',
   router,
-  store,
   components: { App },
   template: '<App/>'
 })

@@ -23,16 +23,11 @@ export default {
   methods: {
     handleSizeChange (val) {
       console.log(`每页 ${val} 条`)
-      // this.$emit('handleSizeChange', `${val}`)
-      this.getPageInfo()
+      this.$emit('handleSizeChange', `${val}`)
     },
     handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
-      // this.$emit('handleCurrentChange', `${val}`)
-      this.getPageInfo()
-    },
-    getPageInfo () {
-      this.$store.dispatch('getPageInfo')
+      this.$emit('handleCurrentChange', `${val}`)
     }
   },
   data () {

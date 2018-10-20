@@ -68,6 +68,7 @@ const router = new Router({
 /* *
  * 全局路由守卫
  * */
+// 全局路由守卫
 router.beforeEach((to, from, next) => {
   console.log('路由守卫')
   // to: Route: 即将要进入的目标 路由对象
