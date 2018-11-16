@@ -14,11 +14,25 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 // 设置
 Vue.config.productionTip = false
-Vue.prototype.http = Axios
-Axios.defaults.baseURL = 'http://www.baidu.com'
+Vue.prototype.Axios = Axios
+Axios.defaults.baseURL = 'http://192.168.3.73:8082'
+Axios.defaults.withCredentials = true
 
 // Vue全局使用element-ui
 Vue.use(Element)
+
+Axios.interceptors.response.use(function (response) {
+  if (response.request.responseURL.includes('/login') && !router.history.current.fullPath.includes('/login')) {
+    Element.Message.warning({
+      message: '请先登录'
+    })
+    router.replace({
+      path: '/login',
+      query: {redirect: router.currentRoute.fullPath}
+    })
+  }
+  return response
+})
 
 /* 挂载Vue实例 */
 new Vue({

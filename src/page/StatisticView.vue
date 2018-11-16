@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import Axios from 'axios'
+import { Message } from 'element-ui'
 import MemberSearchBar from '../components/MemberSearchBar'
 import MemberSearchList from '../components/MemberSearchList'
 import Pagination from '../components/Pagination'
@@ -24,58 +26,14 @@ export default {
         currentPage: 1,
         memberName: '',
         phoneNumber: '',
-        memberStatus: '1'
+        memberStatus: ''
       },
       /* *
       * 从后台获取的数据赋值
       * */
       tableListInfo: {
-        total: 200,
-        tableData: [{
-          id: '123456',
-          memberName: '北京公路建设有限公司',
-          companyName: '北京公路建设有限公司',
-          phoneNumber: '13511111111',
-          companyPhoneNumber: '13511111111',
-          eMail: '123456@qq.com',
-          isVIP: 1,
-          recharge: 100,
-          valid: 1,
-          date: '2018-10-15'
-        }, {
-          id: '123456',
-          memberName: '北京公路建设有限公司',
-          companyName: '北京公路建设有限公司',
-          phoneNumber: '13511111111',
-          companyPhoneNumber: '13511111111',
-          eMail: '123456@qq.com',
-          isVIP: 1,
-          recharge: 100,
-          valid: 1,
-          date: '2018-10-15'
-        }, {
-          id: '123456',
-          memberName: '北京公路建设有限公司',
-          companyName: '北京公路建设有限公司',
-          phoneNumber: '13511111111',
-          companyPhoneNumber: '13511111111',
-          eMail: '123456@qq.com',
-          isVIP: 1,
-          recharge: 100,
-          valid: 1,
-          date: '2018-10-15'
-        }, {
-          id: '123456',
-          memberName: '北京公路建设有限公司',
-          companyName: '北京公路建设有限公司',
-          phoneNumber: '13511111111',
-          companyPhoneNumber: '13511111111',
-          eMail: '123456@qq.com',
-          isVIP: 1,
-          recharge: 100,
-          valid: 1,
-          date: '2018-10-15'
-        }]
+        total: 0,
+        tableData: []
       },
       username: 'test'
     }
@@ -88,25 +46,66 @@ export default {
       this.pageInfo.memberName = val.memberName
       this.pageInfo.phoneNumber = val.phoneNumber
       this.pageInfo.memberStatus = val.memberStatus
-      console.log(this.pageInfo)
+      this.getTableList()
     },
     /* *
     * 分页大小改变
     * */
     paginationSizeChange: function (val) {
       this.pageInfo.pageSize = val
-      console.log(this.pageInfo)
+      this.getTableList()
     },
     /* *
     * 页码改变
     * */
     paginationCurrentChange: function (val) {
       this.pageInfo.currentPage = val
-      console.log(this.pageInfo)
-    }
+      this.getTableList()
+    },
     /* *
     * axios方法，根据查询条件，请求后台数据
     * */
+    getTableList () {
+      Axios.get('/system/statistics', {
+        params: {
+          name: this.pageInfo.memberName,
+          telephone: this.pageInfo.phoneNumber,
+          status: this.pageInfo.memberStatus,
+          pageNo: this.pageInfo.currentPage,
+          pageSize: this.pageInfo.pageSize
+        }
+      }).then((response) => {
+        let data = response.data
+        if (response.status === 200) {
+          let mbClass = {
+            0: '普通会员',
+            1: '充值会员',
+            2: '商会会员'
+          }
+          let apprStat = {
+            0: '无效',
+            1: '有效'
+          }
+          data.results.forEach(function (item) {
+            item.mbClass = mbClass[item.mbClass]
+            item.apprStat = apprStat[item.apprStat]
+          })
+          this.tableListInfo.tableData = data.results
+          this.tableListInfo.total = data.totalCount
+        } else {
+          Message.error({
+            message: '获取列表失败'
+          })
+        }
+      }).catch(response => {
+        Message.error({
+          message: '网络连接失败'
+        })
+      })
+    }
+  },
+  mounted () {
+    this.getTableList()
   }
 }
 </script>

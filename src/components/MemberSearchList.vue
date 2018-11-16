@@ -8,39 +8,40 @@
       <el-table-column
         prop="id"
         label="用户ID"
-        width="180">
+        width="100">
       </el-table-column>
       <el-table-column
-        prop="memberName"
+        prop="mbName"
         label="会员名称"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="phoneNumber"
+        prop="mbTel"
         label="手机号码">
       </el-table-column>
       <el-table-column
-        prop="eMail"
-        label="邮箱地址">
+        prop="mbMail"
+        label="邮箱地址"
+        width="200">
       </el-table-column>
       <el-table-column
-        prop="isVIP"
-        label="是否同时是商会会员">
+        prop="mbClass"
+        label="会员类别">
       </el-table-column>
       <el-table-column
-        prop="recharge"
+        prop="sumRecharge"
         label="充值总计">
       </el-table-column>
       <el-table-column
-        prop="recharge"
+        prop="myScore"
         label="剩余积分">
       </el-table-column>
       <el-table-column
-        prop="valid"
+        prop="apprStat"
         label="是否有效">
       </el-table-column>
       <el-table-column
-        prop="date"
+        prop="mbEndTimeStr"
         label="到期日期">
       </el-table-column>
       <el-table-column label="操作" width="250">
@@ -77,16 +78,20 @@ export default {
         notAllowedCompany: true,
         memberName: '',
         phoneNumber: '',
-        companyName: ''
+        companyName: '',
+        email: '',
+        id: ''
       },
       memberInfoCtrl: {
         memberName: '',
         companyName: '',
         companyPhoneNumber: '',
         area: '',
+        city: '',
+        province: '',
         phoneNumber: '',
         email: '',
-        endTime: '',
+        date: '',
         memberId: ''
       },
       auditDialogVisible: false,
@@ -101,15 +106,23 @@ export default {
       this.auditDialogVisible = val
     },
     getUserInfoItem (item) {
-      this.modalCtrl.memberName = item.memberName
-      this.modalCtrl.phoneNumber = item.phoneNumber
-      this.modalCtrl.companyName = item.memberName
-      // console.log(this.modalCtrl)
+      this.modalCtrl.memberName = item.mbName
+      this.modalCtrl.phoneNumber = item.mbTel
+      this.modalCtrl.companyName = item.mbCompanyName
+      this.modalCtrl.email = item.mbMail
+      this.modalCtrl.id = item.id
       this.dialogVisible = true
     },
     getAuditInfo (item) {
-      this.memberInfoCtrl = item
-      console.log(this.memberInfoCtrl)
+      this.memberInfoCtrl.memberName = item.mbName
+      this.memberInfoCtrl.companyName = item.mbCompanyName
+      this.memberInfoCtrl.province = item.province
+      this.memberInfoCtrl.city = item.city
+      this.memberInfoCtrl.area = item.area
+      this.memberInfoCtrl.phoneNumber = item.mbTel
+      this.memberInfoCtrl.email = item.mbMail
+      this.memberInfoCtrl.date = item.mbEndTime
+      this.memberInfoCtrl.memberId = item.id
       this.auditDialogVisible = true
     }
   }

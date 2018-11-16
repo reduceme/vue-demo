@@ -3,7 +3,7 @@
     <el-container>
       <el-header>
         <div class="header-title">标准平台管理系统</div>
-        <div class="header-icon" style="margin-right: 50px">
+        <div class="header-icon" @click="logout" style="margin-right: 50px">
           <img class="header-image" src="../assets/icon-08.png"/>
           <span class="header-operating">退出</span>
         </div>
@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import Axios from 'axios'
+import { Message } from 'element-ui'
 export default {
   name: 'aside-bar',
   data () {
@@ -61,6 +63,36 @@ export default {
         }]
       }
     }
+  },
+  methods: {
+    logout () {
+      Axios.get('/logout').then((response) => {
+        let data = response.data
+        if (data.status === 'success') {
+          this.$router.push({
+            path: '/login/'
+          })
+        } else {
+          Message.error({
+            message: data.msg
+          })
+        }
+      }).catch(function (response) {
+        Message.error({
+          message: '网络连接失败'
+        })
+      })
+    },
+    getUserInfo () {
+      Axios.get('/member/get_user_info').then(response => {
+        if (response.status === 200) {
+          this.loginUser = response.data.mbName
+        }
+      })
+    }
+  },
+  mounted () {
+    this.getUserInfo()
   }
 }
 </script>
@@ -136,7 +168,7 @@ export default {
     background: #4286DC;
     color: white;
   }
-  .el-menu-item.is-active:after {
+  /* .el-menu-item.is-active:after {
     content: '';
     position: absolute;
     right: -7px;
@@ -145,5 +177,5 @@ export default {
     border-top: 7px solid transparent;
     border-bottom: 7px solid transparent;
     border-right: none;
-  }
+  } */
 </style>

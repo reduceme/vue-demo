@@ -24,7 +24,7 @@
           </el-input>
         </div>
         <div class="login-input-parent">
-          <el-button type="primary">登录</el-button>
+          <el-button type="primary" @click.native="login()">登录</el-button>
         </div>
       </div>
     </div>
@@ -32,6 +32,9 @@
 </template>
 
 <script>
+import Axios from 'axios'
+import { Message } from 'element-ui'
+import QS from 'qs'
 export default {
   name: 'login-view',
   data () {
@@ -43,7 +46,24 @@ export default {
     }
   },
   methods: {
-    login () {}
+    login () {
+      Axios.post('/login', QS.stringify(this.userInfo)).then((response) => {
+        let data = response.data
+        if (data.status === 'success') {
+          this.$router.push({
+            path: '/knowledge/'
+          })
+        } else {
+          Message.error({
+            message: data.msg
+          })
+        }
+      }).catch(function (response) {
+        Message.error({
+          message: '网络连接失败'
+        })
+      })
+    }
   }
 }
 </script>

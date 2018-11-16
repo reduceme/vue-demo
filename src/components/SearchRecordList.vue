@@ -8,19 +8,20 @@
       <el-table-column
         prop="id"
         label="用户ID"
-        width="180">
+        width="100">
       </el-table-column>
       <el-table-column
-        prop="memberName"
+        prop="userRelName"
         label="会员名称"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="phoneNumber"
-        label="联系电话">
+        prop="phoneNum"
+        label="联系电话"
+        width="180">
       </el-table-column>
       <el-table-column
-        prop="memberType"
+        prop="tmType"
         label="用户类型">
       </el-table-column>
       <el-table-column
@@ -28,16 +29,17 @@
         label="公司">
       </el-table-column>
       <el-table-column
-        prop="searchWord"
+        prop="searchChar"
         label="搜索词">
       </el-table-column>
       <el-table-column
-        prop="resultAccount"
+        prop="searchResult"
         label="结果数">
       </el-table-column>
       <el-table-column
-        prop="date"
-        label="时间">
+        prop="searchTime"
+        label="时间"
+        width="180">
       </el-table-column>
     </el-table>
   </div>

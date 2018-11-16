@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Axios from 'axios'
 import LoginView from '../page/LoginView.vue'
 import PagesView from '../page/PagesView.vue'
 import StatisticView from '../page/StatisticView.vue'
@@ -37,9 +38,6 @@ const router = new Router({
     {
       path: '/knowledge',
       component: PagesView,
-      meta: {
-        requireAuth: true
-      },
       children: [
         {
           path: '',
@@ -69,7 +67,7 @@ const router = new Router({
  * 全局路由守卫
  * */
 // 全局路由守卫
-router.beforeEach((to, from, next) => {
+/* router.beforeEach((to, from, next) => {
   console.log('路由守卫')
   // to: Route: 即将要进入的目标 路由对象
   // from: Route: 当前导航正要离开的路由
@@ -91,6 +89,6 @@ router.beforeEach((to, from, next) => {
     }
   }
   next()
-})
+}) */
 
 export default router

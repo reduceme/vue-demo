@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import Axios from 'axios'
+import { Message } from 'element-ui'
 import IntegralSearchBar from '../components/IntegralSearchBar.vue'
 import IntefralSearchList from '../components/IntegralSearchList.vue'
 import Pagination from '../components/Pagination'
@@ -32,44 +34,8 @@ export default {
        * 从后台获取的数据赋值
        * */
       tableListInfo: {
-        total: 200,
-        tableData: [{
-          id: '123456',
-          memberName: '北京公路建设有限公司',
-          phoneNumber: '13511111111',
-          incometype: '1',
-          integral: '+100',
-          recharge: 100,
-          incomeThing: '标准下载',
-          date: '2018-10-15 15:08'
-        }, {
-          id: '123456',
-          memberName: '北京公路建设有限公司',
-          phoneNumber: '13511111111',
-          incometype: '1',
-          integral: '+100',
-          recharge: 100,
-          incomeThing: '标准下载',
-          date: '2018-10-15 15:08'
-        }, {
-          id: '123456',
-          memberName: '北京公路建设有限公司',
-          phoneNumber: '13511111111',
-          incometype: '1',
-          integral: '+100',
-          recharge: 100,
-          incomeThing: '标准下载',
-          date: '2018-10-15 15:08'
-        }, {
-          id: '123456',
-          memberName: '北京公路建设有限公司',
-          phoneNumber: '13511111111',
-          incometype: '1',
-          integral: '+100',
-          recharge: 100,
-          incomeThing: '标准下载',
-          date: '2018-10-15 15:08'
-        }]
+        total: 0,
+        tableData: []
       }
     }
   },
@@ -78,26 +44,65 @@ export default {
       this.integralPageInfo.memberName = val.memberName
       this.integralPageInfo.phoneNumber = val.phoneNumber
       this.integralPageInfo.incomeType = val.incomeType
-      this.integralPageInfo.startTime = val.startTime
-      this.integralPageInfo.endTime = val.endTime
+      this.integralPageInfo.startTime = val.startTime[0]
+      this.integralPageInfo.endTime = val.startTime[1]
+      this.getScoreList()
     },
     /* *
      * 分页大小改变
      * */
     paginationSizeChange: function (val) {
       this.integralPageInfo.pageSize = val
-      console.log(this.integralPageInfo)
+      this.getScoreList()
     },
     /* *
      * 页码改变
      * */
     paginationCurrentChange: function (val) {
       this.integralPageInfo.currentPage = val
-      console.log(this.integralPageInfo)
-    }
+      this.getScoreList()
+    },
     /* *
      * axios方法，根据查询条件，请求后台数据
      * */
+    getScoreList: function () {
+      Axios.get('/system/get_score', {
+        params: {
+          name: this.integralPageInfo.memberName,
+          telephone: this.integralPageInfo.phoneNumber,
+          type: this.integralPageInfo.incomeType,
+          startTime: this.integralPageInfo.startTime,
+          endTime: this.integralPageInfo.endTime,
+          pageNo: this.integralPageInfo.currentPage,
+          pageSize: this.integralPageInfo.pageSize
+        }
+      }).then(response => {
+        if (response.status === 200) {
+          let data = response.data
+          let type = {
+            1: '收入',
+            0: '支出'
+          }
+          data.list.forEach(function (item) {
+            item.type = type[item.type]
+            item.time = item.time.split('.')[0]
+          })
+          this.tableListInfo.tableData = data.list
+          this.tableListInfo.total = data.total
+        } else {
+          Message.error({
+            message: '获取列表失败'
+          })
+        }
+      }).catch(response => {
+        Message.error({
+          message: '网络连接失败'
+        })
+      })
+    }
+  },
+  mounted () {
+    this.getScoreList()
   }
 }
 </script>

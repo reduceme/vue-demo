@@ -8,7 +8,7 @@
       :page-sizes="[20, 100, 200, 300, 400]"
       :page-size="localPageSize"
       layout="sizes, prev, pager, next, total"
-      :total="localTotal">
+      :total="total">
     </el-pagination>
   </div>
 </template>
@@ -32,11 +32,7 @@ export default {
   },
   data () {
     return {
-      /* *
-      * 试图改变父组件中的数据
-      * */
       localPageSize: this.pageInfo.pageSize,
-      localTotal: this.total,
       localCurrentPage: this.pageInfo.currentPage
     }
   }
@@ -44,7 +40,7 @@ export default {
 </script>
 
 <style>
-.el-pagination{
+.el-pagination {
   padding-top: 15px;
   float: right;
 }

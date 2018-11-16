@@ -51,8 +51,8 @@ export default {
       modalCtrl: {
         modalTitle: '新增会员',
         notAllowedPhone: false,
-        notAllowedName: false,
-        notAllowedCompany: false,
+        notAllowedName: true,
+        notAllowedCompany: true,
         memberName: '',
         phoneNumber: '',
         companyName: ''

@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import Axios from 'axios'
+import { Message } from 'element-ui'
 import SearchRecordBar from '../components/SearchRecordBar'
 import SearchRecordList from '../components/SearchRecordList'
 import Pagination from '../components/Pagination'
@@ -31,44 +33,8 @@ export default {
        * 从后台获取的数据赋值
        * */
       tableListInfo: {
-        total: 200,
-        tableData: [{
-          id: '123456',
-          memberName: '李浩然',
-          phoneNumber: '13511111111',
-          memberType: '会员',
-          companyName: '北京公路建设有限公司',
-          searchWord: '汽车零件标准',
-          resultAccount: '55',
-          date: '2018-10-15 15:08'
-        }, {
-          id: '123456',
-          memberName: '李浩然',
-          phoneNumber: '13511111111',
-          memberType: '会员',
-          companyName: '北京公路建设有限公司',
-          searchWord: '汽车零件标准',
-          resultAccount: '55',
-          date: '2018-10-15 15:08'
-        }, {
-          id: '123456',
-          memberName: '李浩然',
-          phoneNumber: '13511111111',
-          memberType: '会员',
-          companyName: '北京公路建设有限公司',
-          searchWord: '汽车零件标准',
-          resultAccount: '55',
-          date: '2018-10-15 15:08'
-        }, {
-          id: '123456',
-          memberName: '李浩然',
-          phoneNumber: '13511111111',
-          memberType: '会员',
-          companyName: '北京公路建设有限公司',
-          searchWord: '汽车零件标准',
-          resultAccount: '55',
-          date: '2018-10-15 15:08'
-        }]
+        total: 0,
+        tableData: []
       }
     }
   },
@@ -79,24 +45,62 @@ export default {
       this.recordPageInfo.memberType = val.memberType
       this.recordPageInfo.companyName = val.companyName
       this.recordPageInfo.resultCount = val.resultCount
+      this.getSearchList()
     },
     /* *
      * 分页大小改变
      * */
     paginationSizeChange: function (val) {
       this.recordPageInfo.pageSize = val
-      console.log(this.recordPageInfo)
+      this.getSearchList()
     },
     /* *
      * 页码改变
      * */
     paginationCurrentChange: function (val) {
       this.recordPageInfo.currentPage = val
-      console.log(this.recordPageInfo)
-    }
+      this.getSearchList()
+    },
     /* *
      * axios方法，根据查询条件，请求后台数据
      * */
+    getSearchList () {
+      Axios.get('/system/searchLog', {
+        params: {
+          mbCompanyName: this.recordPageInfo.companyName,
+          memberLevel: this.recordPageInfo.memberType,
+          phoneNumber: this.recordPageInfo.phoneNumber,
+          resultType: this.recordPageInfo.resultCount,
+          userRealName: this.recordPageInfo.memberName
+        }
+      }).then(response => {
+        if (response.status === 200) {
+          let data = response.data
+          let type = {
+            0: '普通会员',
+            1: '充值会员',
+            2: '商会会员'
+          }
+          data.list.forEach(function (item) {
+            data.tmType = type[item.tmType]
+            item.searchTime = item.searchTime.split('.')[0]
+          })
+          this.tableListInfo.tableData = data.list
+          this.tableListInfo.total = data.total
+        } else {
+          Message.error({
+            message: '获取列表失败'
+          })
+        }
+      }).catch(response => {
+        Message.error({
+          message: '网络连接失败'
+        })
+      })
+    }
+  },
+  mounted () {
+    this.getSearchList()
   }
 }
 </script>
